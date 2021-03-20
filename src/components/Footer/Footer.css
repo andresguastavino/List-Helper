@@ -1,0 +1,16 @@
+@media only screen and (min-width: 720px) {
+    .footer {
+        height: 5vh;
+        border-width: 0px;
+        border-top-width: 1px;
+        border-style: solid;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .bug-report a ,.contact a {
+        padding: 0 10px;
+        margin: 0 20px;
+    }
+}
