@@ -21,16 +21,18 @@ export default class Lista extends Component {
     }
 
     onMouseAction(type, index) {
+        const { themesManager } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
+
         let className = this.buildClassName(false);
-        let themeProps = this.props.themeProps;
         let div = document.querySelectorAll(className)[index];
 
         if(type === 'enter') {
-            div.style.backgroundColor = themeProps.textColor;
-            div.style.color = themeProps.mainColor;
+            div.style.backgroundColor = currentTheme.textColor;
+            div.style.color = currentTheme.mainColor;
         } else {
-            div.style.backgroundColor = themeProps.mainColor;
-            div.style.color = themeProps.textColor;
+            div.style.backgroundColor = currentTheme.mainColor;
+            div.style.color = currentTheme.textColor;
         }
     }
 
@@ -49,26 +51,21 @@ export default class Lista extends Component {
     }
 
     render() {
-        const { themeProps, name } = this.props;
+        const { themesManager, name } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
 
-        const listaStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
+        const style = {
+            backgroundColor: currentTheme.mainColor,
+            borderColor: currentTheme.borderColor,
+            color: currentTheme.textColor
+        };
         
-        const buttonStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
-
         let className = this.buildClassName(true);
 
         return(
-            <div className="lista" style={listaStyle}>
+            <div className="lista" style={style}>
                 <div className={"button " + className} 
-                    style={buttonStyle} 
+                    style={style} 
                     onClick={this.onClick}
                     onMouseEnter={() => this.onMouseAction('enter', 0)}
                     onMouseLeave={() => this.onMouseAction('leave', 0)}
@@ -76,7 +73,7 @@ export default class Lista extends Component {
                     <p unselectable="on">{name}</p>
                 </div>
                 <div className={"button " + className} 
-                    style={buttonStyle} 
+                    style={style} 
                     onClick={this.deleteList}
                     onMouseEnter={() => this.onMouseAction('enter', 1)}
                     onMouseLeave={() => this.onMouseAction('leave', 1)}

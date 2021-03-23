@@ -18,7 +18,7 @@ export default class App extends Component {
 
         this.state = {
             themesManager: new ThemesManager(),
-            statusUpdates: 0,
+            stateUpdates: 0,
         }
 
         this.setTheme = this.setTheme.bind(this);
@@ -33,44 +33,8 @@ export default class App extends Component {
 
         themesManager.setCurrentTheme(themeIndex);
         this.setState((state) => ({
-            statusUpdates: state.statusUpdates + 1
+            stateUpdates: state.stateUpdates + 1
         }));
-        /*
-        let theme, mainColor, secondaryColor, borderColor, textColor;
-
-        if(themeProps === undefined) {
-            theme = 0;
-            mainColor = '#000';
-            secondaryColor = '#fff';
-            borderColor = '#383434';
-            textColor = '#fff';
-        } else {
-            theme = themeProps.theme;
-            mainColor = themeProps.mainColor;
-            secondaryColor = themeProps.secondaryColor;
-            borderColor = themeProps.borderColor;
-            textColor = themeProps.textColor;
-        }
-
-        this.setState({
-            theme: theme,
-            mainColor: mainColor,
-            secondaryColor: secondaryColor,
-            borderColor: borderColor,
-            textColor: textColor
-        });
-
-        document.cookie = 'currentThemeIndex=' + theme + '; Path=/; Expires=Thu, 01 Jan 2022 00:00:01 GMT;';
-
-        if(theme === 2) {
-            document.cookie = 
-            'customTheme=' + 
-                mainColor + ',' + 
-                secondaryColor + ',' + 
-                borderColor + ',' + 
-                textColor + 
-                '; Path=/; Expires=Thu, 01 Jan 2022 00:00:01 GMT;';
-        }*/
     }
 
     render() {

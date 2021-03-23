@@ -15,8 +15,7 @@ export default class NewLista extends Component {
         this.createLista = this.createLista.bind(this);
         this.createItemsInputs = this.createItemsInputs.bind(this);
         this.addItemInput = this.addItemInput.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.onMouseAction = this.onMouseAction.bind(this);
         this.importFromJSON = this.importFromJSON.bind(this);
         this.overrideExistingList = this.overrideExistingList.bind(this);
     }
@@ -124,18 +123,18 @@ export default class NewLista extends Component {
         this.setState({itemInputs: itemInputs});
     }
 
-    onMouseEnter(className) {
-        let themeProps = this.props.themeProps;
-        let div = document.querySelector('.' + className);
-        div.style.backgroundColor = themeProps.textColor;
-        div.style.color = themeProps.mainColor;
-    }
+    onMouseAction(className, type) {
+        const { themesManager } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
 
-    onMouseLeave(className) {
-        let themeProps = this.props.themeProps;
         let div = document.querySelector('.' + className);
-        div.style.backgroundColor = themeProps.mainColor;
-        div.style.color = themeProps.textColor;
+        if(type === 'enter') {
+            div.style.backgroundColor = currentTheme.textColor;
+            div.style.color = currentTheme.mainColor;
+        } else {
+            div.style.backgroundColor = currentTheme.mainColor;
+            div.style.color = currentTheme.textColor;
+        }
     }
 
     importFromJSON() {
@@ -162,33 +161,20 @@ export default class NewLista extends Component {
     }
 
     render() {
-        let { themeProps, cancelNewList } = this.props; 
-        let { itemInputs } = this.state;
+        const { themesManager, cancelNewList } = this.props; 
+        const currentTheme = themesManager.getCurrentTheme();
 
-        const newListaStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
-        
-        const newListaHeaderStyle = {
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
+        const { itemInputs } = this.state;
 
-        const buttonStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
-
-        const horizontalSeparatorStyle = {
-            borderColor: themeProps.borderColor
+        const style = {
+            backgroundColor: currentTheme.mainColor,
+            borderColor: currentTheme.borderColor,
+            color: currentTheme.textColor
         }
 
         return(
-            <div className="new-lista" style={newListaStyle} >
-                <div className="new-lista-header" style={newListaHeaderStyle} >
+            <div className="new-lista" style={style} >
+                <div className="new-lista-header" style={style} >
                     <p>New List</p>
                 </div>
                 <div className="new-lista-form">
@@ -225,14 +211,14 @@ export default class NewLista extends Component {
                     <div className="label-input">
                         <div className="label"></div>
                         <div className="input">
-                            <button style={buttonStyle} className="button-add-inputs" onClick={this.addItemInput} onMouseEnter={() => this.onMouseEnter('button-add-inputs')} onMouseLeave={() => this.onMouseLeave('button-add-inputs')} >(+) Item</button>
+                            <button style={style} className="button-add-inputs" onClick={this.addItemInput} onMouseEnter={() => this.onMouseAction('button-add-inputs', 'enter')} onMouseLeave={() => this.onMouseAction('button-add-inputs', 'leave')} >(+) Item</button>
                         </div>
                     </div>
                     <div className="buttons">
-                        <button type="button" className="button-cancel" style={buttonStyle} onClick={cancelNewList} onMouseEnter={() => this.onMouseEnter('button-cancel')} onMouseLeave={() => this.onMouseLeave('button-cancel')} >Cancel</button>
-                        <button type="button" className="button-add" style={buttonStyle} onClick={this.createLista} onMouseEnter={() => this.onMouseEnter('button-add')} onMouseLeave={() => this.onMouseLeave('button-add')} >Add new list</button>
+                        <button type="button" className="button-cancel" style={style} onClick={cancelNewList} onMouseEnter={() => this.onMouseAction('button-cancel', 'enter')} onMouseLeave={() => this.onMouseAction('button-cancel', 'leave')} >Cancel</button>
+                        <button type="button" className="button-add" style={style} onClick={this.createLista} onMouseEnter={() => this.onMouseAction('button-add', 'enter')} onMouseLeave={() => this.onMouseAction('button-add', 'leave')} >Add new list</button>
                     </div>
-                    <div className="horizontalSeparator" style={horizontalSeparatorStyle} />
+                    <div className="horizontalSeparator" style={style} />
                     <div className="label-input">
                         <div className="label">
                             <label htmlFor="import-json">JSON</label>
@@ -242,7 +228,7 @@ export default class NewLista extends Component {
                         </div>
                     </div>
                     <div className="buttons">
-                        <button type="button" className="button-import" style={buttonStyle} onClick={this.importFromJSON} onMouseEnter={() => this.onMouseEnter('button-import')} onMouseLeave={() => this.onMouseLeave('button-import')} >Import from JSON</button>
+                        <button type="button" className="button-import" style={style} onClick={this.importFromJSON} onMouseEnter={() => this.onMouseAction('button-import', 'enter')} onMouseLeave={() => this.onMouseAction('button-import', 'leave')} >Import from JSON</button>
                     </div>
                 </div>
             </div>

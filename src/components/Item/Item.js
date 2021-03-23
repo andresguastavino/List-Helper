@@ -105,35 +105,29 @@ export default class Item extends Component {
     }
 
     render() {
-        const { name, type, themeProps } = this.props;
+        const { name, type, themesManager } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
+
         const { states, colors, currentState, quantity } = this.state;
 
+        const style = {
+            borderColor: currentTheme.borderColor
+        }
+
         const itemStyle = {
-            borderColor: themeProps.borderColor,
+            borderColor: currentTheme.borderColor,
             backgroundColor: colors[currentState]
-        }
-
-        const itemNombreStyle = {
-            borderColor: themeProps.borderColor
-        }
-
-        const increaseStyle = {
-            borderColor: themeProps.borderColor
-        }
-
-        const itemInfoStyle = {
-            borderColor: themeProps.borderColor
         }
 
         if(type.toLowerCase() !== 'quantities') {
             return(
                 <div className="item" style={itemStyle} onClick={this.changeState} >
-                    <div className="item-nombre" style={itemNombreStyle}>
+                    <div className="item-nombre" style={style}>
                         <p unselectable="on">{name}</p>
                     </div>
                     <div className="item-state">
                         <p unselectable="on">
-                            { states[currentState] }
+                            {states[currentState]}
                         </p>
                     </div>
                 </div>
@@ -141,11 +135,11 @@ export default class Item extends Component {
         } else {
             return(
                 <div className="item-quantity" style={itemStyle} >
-                    <div className="decrease" style={increaseStyle} onClick={() => this.increase(-100)}>{'<<<'}</div>
-                    <div className="decrease middle-decrease" style={increaseStyle} onClick={() => this.increase(-10)}>{'<<'}</div>
-                    <div className="decrease" style={increaseStyle} onClick={() => this.increase(-1)}>{'<'}</div>
-                    <div className="item-info" style={itemInfoStyle}>
-                        <div className="item-nombre" style={itemNombreStyle}>
+                    <div className="decrease" style={style} onClick={() => this.increase(-100)}>{'<<<'}</div>
+                    <div className="decrease middle-decrease" style={style} onClick={() => this.increase(-10)}>{'<<'}</div>
+                    <div className="decrease" style={style} onClick={() => this.increase(-1)}>{'<'}</div>
+                    <div className="item-info" style={style}>
+                        <div className="item-nombre" style={style}>
                             <p unselectable="on">{quantity}</p>
                         </div>
                         <div className="item-state">
@@ -154,9 +148,9 @@ export default class Item extends Component {
                             </p>
                         </div>
                     </div>
-                    <div className="increase" style={increaseStyle} onClick={() => this.increase(1)}>{'>'}</div>
-                    <div className="increase middle-increase" style={increaseStyle} onClick={() => this.increase(10)}>{'>>'}</div>
-                    <div className="increase" style={increaseStyle} onClick={() => this.increase(100)}>{'>>>'}</div> 
+                    <div className="increase" style={style} onClick={() => this.increase(1)}>{'>'}</div>
+                    <div className="increase middle-increase" style={style} onClick={() => this.increase(10)}>{'>>'}</div>
+                    <div className="increase" style={style} onClick={() => this.increase(100)}>{'>>>'}</div> 
                 </div>
             );
         }

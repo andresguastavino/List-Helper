@@ -13,15 +13,13 @@ export default class Items extends Component {
     }
 
     getItems() {
-        let list = this.props.list;
-        let themeProps = this.props.themeProps;
-        let updateItemValue = this.props.updateItemValue;
+        const { themesManager, list, updateItemValue } = this.props;
 
         if(list !== undefined && list.items !== undefined) {
             let items = [];
 
             for(let item of list.items) {
-                items.push(<Item key={item.key} name={item.name} value={item.value} type={list.type} themeProps={themeProps} updateItemValue={updateItemValue} />);
+                items.push(<Item key={item.key} name={item.name} value={item.value} type={list.type} themesManager={themesManager} updateItemValue={updateItemValue} />);
             }
     
             return items;
@@ -51,15 +49,17 @@ export default class Items extends Component {
         alert('List coppied to clipboard as JSON');
     }
 
-    onMouseAction(type, className) {
-        let { themeProps } = this.props;
+    onMouseAction(className, type) {
+        const { themesManager } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
+
         let div = document.querySelector('.' + className);
         if(type === 'enter') {
-            div.style.backgroundColor = themeProps.textColor;
-            div.style.color = themeProps.mainColor;
+            div.style.backgroundColor = currentTheme.textColor;
+            div.style.color = currentTheme.mainColor;
         } else {
-            div.style.backgroundColor = themeProps.mainColor;
-            div.style.color = themeProps.textColor;
+            div.style.backgroundColor = currentTheme.mainColor;
+            div.style.color = currentTheme.textColor;
         }
     }
 
@@ -68,43 +68,27 @@ export default class Items extends Component {
     }
 
     render() {
-        const { themeProps, list } = this.props;
+        const { themesManager, list } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
 
-        const itemsStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
-
-        const itemsHeaderStyle = {
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
-
-        const editItemsButtonStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
-
-        const exportJSONButtonStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
+        const style = {
+            backgroundColor: currentTheme.mainColor,
+            borderColor: currentTheme.borderColor,
+            color: currentTheme.textColor
         }
 
 
         return(
-            <div className="items" style={itemsStyle}>
-                <div className="items-header" style={itemsHeaderStyle}>
+            <div className="items" style={style}>
+                <div className="items-header" style={style}>
                     <div className="items-title">
                         <p>{list.name + ' > Items / ' + list.type}</p>
                     </div>
                     <div className="items-buttons">
-                        <div className="edit-items-button" style={editItemsButtonStyle} onClick={this.onEditItems} onMouseEnter={() => this.onMouseAction('enter', 'edit-items-button')} onMouseLeave={() => this.onMouseAction('leave', 'edit-items-button')} >
+                        <div className="edit-items-button" style={style} onClick={this.onEditItems} onMouseEnter={() => this.onMouseAction('edit-items-button', 'enter')} onMouseLeave={() => this.onMouseAction('edit-items-button', 'leave')} >
                             <p>Edit list items</p>
                         </div>
-                        <div className="export-json-button" style={exportJSONButtonStyle} onClick={this.exportAsJson} onMouseEnter={() => this.onMouseAction('enter', 'export-json-button')} onMouseLeave={() => this.onMouseAction('leave', 'export-json-button')} >
+                        <div className="export-json-button" style={style} onClick={this.exportAsJson} onMouseEnter={() => this.onMouseAction('export-json-button', 'enter')} onMouseLeave={() => this.onMouseAction('export-json-button', 'leave')} >
                             <p>Export list as JSON</p>
                         </div>
                     </div>
