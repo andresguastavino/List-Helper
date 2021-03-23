@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
+
+/* Classes */
+import ListsManager from './../../classes/ListsManager';
+import CookiesManager from './../../classes/CookiesManager';
+
+/* Components */
 import Items from './../Items/Items';
 import Listas from './../Listas/Listas'; 
 import NewLista from './../NewLista/NewLista';
+
+/* Stylesheets */
 import './Main.css';
 
 export default class Main extends Component {
@@ -10,6 +18,7 @@ export default class Main extends Component {
         super(props); 
 
         this.state = {
+            listsManager: new ListsManager(),
             lists: [],
             currentList: {},
             showNewListComponent: false,
@@ -27,7 +36,7 @@ export default class Main extends Component {
     }
     
     componentDidMount() {
-        this.setLists();
+        //this.setLists();
     }
 
     setLists() {
@@ -123,7 +132,6 @@ export default class Main extends Component {
     }
 
     updateCookies(list) {
-        console.log(list);
         if(list !== undefined && list.name !== undefined) {
             let cookie = list.name + '=' + list.type + ',';
 
@@ -142,12 +150,10 @@ export default class Main extends Component {
                     cookie += ';';
                 }
             }
-            console.log(cookie);
+
             cookie += 'Path=/;Expires=Thu, 01 Jan ' + (new Date().getFullYear() + 1) + ' 00:00:00 GMT;';
-            console.log(cookie);
-            console.log(document.cookie);
+
             document.cookie = cookie;
-            console.log(document.cookie);
         }
     }
 
@@ -222,28 +228,28 @@ export default class Main extends Component {
     }
 
     render() {
-        const { themeProps } = this.props;
-        const { lists, currentList, showNewListComponent} = this.state;
+        const { themesManager } = this.props;
+        const { lists, currentList, showNewListComponent, listsManager} = this.state;
 
         return(
           <div className="main" >
-            <Listas lists={lists} 
+            <Listas listsManager={listsManager}
                 onClickList={this.onClickList} 
                 newList={this.newList}
                 deleteList={this.deleteList}
-                themeProps={themeProps}
+                themesManager={themesManager}
             />
             { 
                 !showNewListComponent ? 
                     (currentList.name !== undefined ? 
-                        <Items list={currentList} themeProps={themeProps} updateItemValue={this.updateItemValue} /> 
+                        <Items list={currentList} themesManager={themesManager} updateItemValue={this.updateItemValue} /> 
                         : 
                         '') 
                     :
                     <NewLista 
                         cancelNewList={this.cancelNewList} 
                         createList={this.createList}  
-                        themeProps={themeProps}
+                        themesManager={themesManager}
                     /> 
             }
           </div>

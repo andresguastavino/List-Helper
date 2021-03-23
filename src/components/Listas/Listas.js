@@ -7,28 +7,33 @@ export default class Listas extends Component {
         super(props);
 
         this.listLists = this.listLists.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.onMouseAction = this.onMouseAction.bind(this);
     }
 
     listLists() {
-        let lists = [];
+        const { themesManager, listsManager } = this.props;
+        let lists = listsManager.getLists();
+        let listsAux = [];
 
-        if(this.props.lists.length !== 0) {
-            for(let list of this.props.lists) {
-                lists.push(
-                    <Lista key={list.name} 
+        if(lists.length !== 0) {
+            for(let i = 0; i < lists.length; i++) {
+                let list = lists[i];
+
+                listsAux.push(
+                    <Lista 
+                        key={list.name} 
                         name={list.name} 
+                        index={i}
                         onClickList={this.props.onClickList} 
                         deleteList={this.props.deleteList} 
-                        themeProps={this.props.themeProps} 
+                        themesManager={themesManager}
                     />
                 );
             }
         }
 
-        if(lists.length !== 0) {
-            return lists;
+        if(listsAux.length !== 0) {
+            return listsAux;
         } else {
             return (
                 <div className="no-lists">
@@ -38,53 +43,44 @@ export default class Listas extends Component {
         }
     }
 
-    onMouseEnter() {
-        let newListDiv = document.querySelector('.nueva-lista');
-        const themeProps = this.props.themeProps;
-        newListDiv.style.backgroundColor = themeProps.textColor;
-        newListDiv.style.color = themeProps.mainColor;
-    }
+    onMouseAction(className, type) {
+        const { themesManager } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
 
-    onMouseLeave() {
-        let newListDiv = document.querySelector('.nueva-lista');
-        const themeProps = this.props.themeProps;
-        newListDiv.style.backgroundColor = themeProps.mainColor;
-        newListDiv.style.color = themeProps.textColor;
+        let div = document.querySelector('.' + className);
+
+        if(type === 'enter') {
+            div.style.backgroundColor = currentTheme.textColor;
+            div.style.color = currentTheme.mainColor;
+        } else {
+            div.style.backgroundColor = currentTheme.mainColor;
+            div.style.color = currentTheme.textColor;
+        }
     }
 
     render() {
-        const { themeProps } = this.props;
+        const { themesManager } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
 
-        const listasStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
-
-        const listasHeaderStyle = {
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
-        }
-
-        const nuevaListaStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
+        const style = {
+            backgroundColor: currentTheme.mainColor,
+            borderColor: currentTheme.borderColor,
+            color: currentTheme.textColor
         }
 
         return(
-            <div className="listas" style={listasStyle}>
-                <div className="listas-header" style={listasHeaderStyle}>
+            <div className="listas" style={style}>
+                <div className="listas-header" style={style}>
                     <p>Lists</p>
                 </div>
                 <div className="listado-listas">
                     {this.listLists()}
                 </div>
                 <div className="nueva-lista" 
-                    style={nuevaListaStyle} 
+                    style={style} 
                     onClick={this.props.newList}
-                    onMouseEnter={this.onMouseEnter}
-                    onMouseLeave={this.onMouseLeave}
+                    onMouseEnter={() => this.onMouseAction('nueva-lista', 'enter')}
+                    onMouseLeave={() => this.onMouseAction('nueva-lista', 'leave')}
                 >
                     <p>(+) New List</p>
                 </div>  

@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
+
+/* Classes */
+import ThemesManager from './classes/ThemesManager';
+
+/* Components */
 import Header from './components/Header/Header';
 import Main from './components/Main/Main';
 import Footer from './components/Footer/Footer';
+
+/* Stylesheets */
 import './App.css';
 
 export default class App extends Component {
@@ -10,17 +17,25 @@ export default class App extends Component {
         super(props); 
 
         this.state = {
-            theme: 0,
-            mainColor: '',
-            secondaryColor: '',
-            borderColor: '',
-            textColor: '',
+            themesManager: new ThemesManager(),
+            statusUpdates: 0,
         }
 
         this.setTheme = this.setTheme.bind(this);
     }
 
-    setTheme(themeProps) {
+    setTheme(themeIndex, customTheme) {
+        let { themesManager } = this.state;
+
+        if(themeIndex === 2) {
+            themesManager.setCustomTheme(customTheme);
+        }
+
+        themesManager.setCurrentTheme(themeIndex);
+        this.setState((state) => ({
+            statusUpdates: state.statusUpdates + 1
+        }));
+        /*
         let theme, mainColor, secondaryColor, borderColor, textColor;
 
         if(themeProps === undefined) {
@@ -45,56 +60,42 @@ export default class App extends Component {
             textColor: textColor
         });
 
-        document.cookie = 
-            'themeProps=' + 
-                theme + ',' +
-                mainColor + ',' + 
-                secondaryColor + ',' + 
-                borderColor + ',' + 
-                textColor + 
-                '; Path=/; Expires=Thu, 01 Jan 2022 00:00:01 GMT;';
+        document.cookie = 'currentThemeIndex=' + theme + '; Path=/; Expires=Thu, 01 Jan 2022 00:00:01 GMT;';
 
         if(theme === 2) {
             document.cookie = 
-            'customThemeProps=' + 
+            'customTheme=' + 
                 mainColor + ',' + 
                 secondaryColor + ',' + 
                 borderColor + ',' + 
                 textColor + 
                 '; Path=/; Expires=Thu, 01 Jan 2022 00:00:01 GMT;';
-        }
+        }*/
     }
 
     render() {
-        const { theme, mainColor, secondaryColor, borderColor, textColor } = this.state;
+        const { themesManager } = this.state;
+        const currentTheme = themesManager.getCurrentTheme();
 
-        const appStyle = {
-            backgroundColor: secondaryColor
-        }
-
-        let themeProps = {
-            theme: theme,
-            mainColor: mainColor,
-            secondaryColor: secondaryColor,
-            borderColor: borderColor,
-            textColor: textColor
+        const style = {
+            backgroundColor: currentTheme.secondaryColor
         }
 
         if(window.screen.width < 720 || window.innerWidth < 720) {
             console.log('window screen width: ' + window.screen.width);
             console.log('window innerWidth: ' + window.innerWidth);
             return (
-                <div className="app" style={appStyle}>
+                <div className="app" style={style}>
                     <h1>Sorry, we don't have support for this screen resolution yet. Try on a device with a width resolution greater than 720px.</h1>
                 </div>
             );
         }
 
         return (
-            <div className="app" style={appStyle}>
-                <Header setTheme={this.setTheme} themeProps={themeProps} />
-                <Main themeProps={themeProps} />
-                <Footer themeProps={themeProps} />
+            <div className="app" style={style}>
+                <Header setTheme={this.setTheme} themesManager={themesManager} />
+                <Main themesManager={themesManager} />
+                <Footer themesManager={themesManager} />
             </div>
         );
     }

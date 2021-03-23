@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+
+/* Stylesheets */
 import './Header.css';
 
 export default class Header extends Component {
@@ -7,21 +9,33 @@ export default class Header extends Component {
         super(props);
 
         this.state = {
-            showCustomThemeModal: false,
             theme: 0,
             mainColor: '#000',
             secondaryColor: '#000',
             borderColor: '#000',
-            textColor: '#000'
+            textColor: '#000',
+            showCustomThemeModal: false,
         }
 
-        this.changeTheme = this.changeTheme.bind(this);
+        this.setTheme = this.setTheme.bind(this);
         this.changeColor = this.changeColor.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.onMouseAction = this.onMouseAction.bind(this);
     }
 
     componentDidMount() {
+        let { themesManager } = this.props;
+        let currentTheme = themesManager.getCurrentTheme();
+        let currentThemeIndex = themesManager.getCurrentThemeIndex();
+
+        this.setState({
+            theme: currentThemeIndex,
+            mainColor: currentTheme.mainColor,
+            secondaryColor: currentTheme.secondaryColor,
+            borderColor: currentTheme.borderColor,
+            textColor: currentTheme.textColor,
+            showCustomThemeModal: currentThemeIndex == 2,
+        })
+        /*
         let theme, mainColor, secondaryColor, borderColor, textColor;
         let customMainColor, customSecondaryColor, customBorderColor, customTextColor;
         let cookies = document.cookie;
@@ -73,18 +87,33 @@ export default class Header extends Component {
         }
 
         this.props.setTheme(themeProps);
-
+        */
         for(let input of document.querySelectorAll('input[type="radio"]')) {
-            if(input.value === theme) {
+            if(parseInt(input.value) === currentThemeIndex) {
                 input.checked = true;
             }
         }
     }
    
-    changeTheme(theme) {
-        let themeProps = {};
+    setTheme(themeIndex) {
+        let customTheme;
         let showCustomThemeModal = true;
 
+        if(themeIndex === 2) {
+            let inputs = document.querySelectorAll('input[type="color"]');
+            customTheme = {
+                mainColor: inputs[0].value,
+                secondaryColor: inputs[1].value,
+                borderColor: inputs[2].value,
+                textColor: inputs[3].value
+            };
+        } else {
+            showCustomThemeModal = false;
+        }
+
+        this.setState({showCustomThemeModal});
+        this.props.setTheme(themeIndex, customTheme);
+        /*
         if(theme === 0) {
             themeProps = {
                 theme: theme,
@@ -116,9 +145,9 @@ export default class Header extends Component {
 
         this.props.setTheme(themeProps);
         this.setState({
-            themeProps,
             showCustomThemeModal
         });
+        */
     }
 
     changeColor(input) {
@@ -141,43 +170,41 @@ export default class Header extends Component {
         }
     }
 
-    onMouseEnter(className) {
-        let themeProps = this.props.themeProps;
+    onMouseAction(className, type) {
+        let { themesManager } = this.props;
+        let currentTheme = themesManager.getCurrentTheme();
         let div = document.querySelector('.' + className);
-        div.style.backgroundColor = themeProps.textColor;
-        div.style.color = themeProps.mainColor;
-    }
 
-    onMouseLeave(className) {
-        let themeProps = this.props.themeProps;
-        let div = document.querySelector('.' + className);
-        div.style.backgroundColor = themeProps.mainColor;
-        div.style.color = themeProps.textColor;
+        if(type === 'enter') {
+            div.style.backgroundColor = currentTheme.textColor;
+            div.style.color = currentTheme.mainColor;
+        } else {
+            div.style.backgroundColor = currentTheme.mainColor;
+            div.style.color = currentTheme.textColor;
+        }
+
     }
 
     render() {   
-        const { themeProps } = this.props;
-        const { mainColor, secondaryColor, borderColor, textColor, showCustomThemeModal } = this.state; 
-        let intputColorBorder = themeProps.borderColor;
+        const { themesManager } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
 
-        const headerStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
+        const { mainColor, secondaryColor, borderColor, textColor, showCustomThemeModal } = this.state; 
+
+        const inputBorderColor = currentTheme.borderColor;
+
+        const style = {
+            backgroundColor: currentTheme.mainColor,
+            borderColor: currentTheme.borderColor,
+            color: currentTheme.textColor
         }
 
         const verticalSeparatorStyle = {
-            backgroundColor: themeProps.borderColor
-        }
-
-        const applyButtonStyle = {
-            backgroundColor: themeProps.mainColor,
-            borderColor: themeProps.borderColor,
-            color: themeProps.textColor
+            backgroundColor: currentTheme.borderColor
         }
 
         return(
-            <div className="header" style={headerStyle} >
+            <div className="header" style={style} >
                 <div className="text-holder">
                     <h1>List Helper</h1>
                 </div>
@@ -188,11 +215,11 @@ export default class Header extends Component {
                         <p>Theme</p>
                     </div>
                     <div className="input-group">
-                        <input type="radio" name="theme" id="light" value="0" onClick={() => this.changeTheme(0)}/>
+                        <input type="radio" name="theme" id="light" value="0" onClick={() => this.setTheme(0)}/>
                         <label htmlFor="light">Light</label>
                     </div>
                     <div className="input-group">
-                        <input type="radio" name="theme" id="dark" value="1" onClick={() => this.changeTheme(1)}/>
+                        <input type="radio" name="theme" id="dark" value="1" onClick={() => this.setTheme(1)}/>
                         <label htmlFor="dark">Dark</label>
                     </div>
                     <div className="input-group">
@@ -206,34 +233,34 @@ export default class Header extends Component {
                     <div className="custom-theme-modal">
                         <div className="color-input-group">
                             <label htmlFor="main-color">
-                                <span className="color-input" id="sp-main-color" style={{backgroundColor: mainColor, borderColor: intputColorBorder}} />
+                                <span className="color-input" id="sp-main-color" style={{backgroundColor: mainColor, borderColor: inputBorderColor}} />
                             </label>
                             <input type="color" id="main-color" value={mainColor} onChange={() => this.changeColor('main-color')} />
                             <label htmlFor="main-color">Main</label>
                         </div>
                         <div className="color-input-group">
                             <label htmlFor="secondary-color">
-                                <span className="color-input" id="sp-secondary-color" style={{backgroundColor: secondaryColor, borderColor: intputColorBorder}} />
+                                <span className="color-input" id="sp-secondary-color" style={{backgroundColor: secondaryColor, borderColor: inputBorderColor}} />
                             </label>
                             <input type="color" id="secondary-color" value={secondaryColor} onChange={() => this.changeColor('secondary-color')} />
                             <label htmlFor="secondary-color">Secondary</label>
                         </div>
                         <div className="color-input-group">
                             <label htmlFor="border-color">
-                                <span className="color-input" id="sp-border-color" style={{backgroundColor: borderColor, borderColor: intputColorBorder}} />
+                                <span className="color-input" id="sp-border-color" style={{backgroundColor: borderColor, borderColor: inputBorderColor}} />
                             </label>
                             <input type="color" id="border-color" value={borderColor} onChange={() => this.changeColor('border-color')} />
                             <label htmlFor="border-color">Border</label>
                         </div>
                         <div className="color-input-group">
                             <label htmlFor="text-color">
-                                <span className="color-input" id="sp-text-color" style={{backgroundColor: textColor, borderColor: intputColorBorder}} />
+                                <span className="color-input" id="sp-text-color" style={{backgroundColor: textColor, borderColor: inputBorderColor}} />
                             </label>
                             <input type="color" id="text-color" value={textColor} onChange={() => this.changeColor('text-color')} />
                             <label htmlFor="text-color">Text</label>
                         </div>
                         <div className="color-input-group">
-                            <button type="button" className="apply-button" style={applyButtonStyle} onClick={() => this.changeTheme(2)} onMouseEnter={() => this.onMouseEnter('apply-button')} onMouseLeave={() => this.onMouseLeave('apply-button')} >Apply</button>
+                            <button type="button" className="apply-button" style={style} onClick={() => this.setTheme(2)} onMouseEnter={() => this.onMouseAction('apply-button', 'enter')} onMouseLeave={() => this.onMouseAction('apply-button', 'leave')} >Apply</button>
                         </div>
                     </div> : ''
                 }
