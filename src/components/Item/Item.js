@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+
+/* Stylesheets */
 import './Item.css';
 
 export default class Item extends Component {
@@ -13,9 +15,9 @@ export default class Item extends Component {
             quantity: 0,
         }
 
+        this.setStatesAndColors = this.setStatesAndColors.bind(this);
         this.changeState = this.changeState.bind(this);
         this.increase = this.increase.bind(this);
-        this.setStatesAndColors = this.setStatesAndColors.bind(this);
     }
 
     componentDidMount() {
@@ -23,7 +25,7 @@ export default class Item extends Component {
     }
 
     setStatesAndColors() {
-        let { type, value } = this.props;
+        const { type, value } = this.props;
         let states = [];
         let colors = [];
         let currentState = 0;
@@ -55,11 +57,8 @@ export default class Item extends Component {
                 case 'Here':
                     currentState = 1;
                     break;
-                case 'Spoke':
-                    currentState = 2;
-                    break;
                 default:
-                    currentState = -1;
+                    currentState = 2;
                     break;
             }
         } else if(type.toLowerCase() === 'dual-state' || type.toLowerCase() === 'triple-state') {
@@ -70,11 +69,8 @@ export default class Item extends Component {
                 case 'In progress':
                     currentState = 1;
                     break;
-                case 'Done':
-                    currentState = type.toLowerCase() === 'dual-state' ? 1 : 2;
-                    break;
                 default:
-                    currentState = -1;
+                    currentState = type.toLowerCase() === 'dual-state' ? 1 : 2;
                     break;
             }
         } else {
@@ -91,17 +87,17 @@ export default class Item extends Component {
 
     changeState() {
         let { states, currentState } = this.state;
-        let { name, type } = this.props;
+        const { name, listsManager } = this.props;
         currentState = currentState + 1 >= states.length ? 0 : currentState + 1;
         this.setState({currentState: currentState});
-        this.props.updateItemValue(name, states[currentState], type);
+        listsManager.updateItemValue(name, states[currentState]);
     }
 
     increase(increment) {
         let { quantity } = this.state;
-        let { name, type } = this.props;
+        const { name, listsManager } = this.props;
         this.setState({quantity: quantity + increment});
-        this.props.updateItemValue(name, quantity, type);
+        listsManager.updateItemValue(name, quantity);
     }
 
     render() {

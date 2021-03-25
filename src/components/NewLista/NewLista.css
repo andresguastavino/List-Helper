@@ -74,42 +74,8 @@
 
     .horizontalSeparator {
         margin: 2% 0;
-        border-width: 1px;
-        border-style: solid;
+        width: 100%;
+        height: 1px;
     }
 
 }
-/*.new-lista-component {
-    position: absolute;
-    top: 20%;
-    left: 35%;
-    width: 500px;
-    height: 200px;
-    background-color: rgba(255, 255, 255, 0.829);
-    border: 3px solid #000;
-    border-radius: 5px;
-}
-
-.titulo {
-    text-align: center;
-    border-bottom: 1px solid #000;
-    margin-bottom: 8%;
-}
-
-.label-input {
-    text-align: right;
-    margin: 2px 0px;
-    display: flex;
-    justify-content: space-around;
-}
-
-.botones {
-    margin-top: 6%; 
-    margin-left: 5%;
-}
-
-.botones button {
-    margin: 0 10%;
-    padding: 5px;
-}
-*/

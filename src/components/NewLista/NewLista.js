@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+
+/* Components */
 import NewItem from './../NewItem/NewItem';
+
+/* Stylesheets */
 import './NewLista.css';
 
 export default class NewLista extends Component {
@@ -12,19 +16,31 @@ export default class NewLista extends Component {
             itemInputs: [],
         }
 
-        this.createLista = this.createLista.bind(this);
+        this.createList = this.createList.bind(this);
+        this.createListFromForm = this.createListFromForm.bind(this);
+        this.createListFromJSON = this.createListFromJSON.bind(this);
         this.createItemsInputs = this.createItemsInputs.bind(this);
-        this.addItemInput = this.addItemInput.bind(this);
+        this.addItemInputs = this.addItemInputs.bind(this);
         this.onMouseAction = this.onMouseAction.bind(this);
-        this.importFromJSON = this.importFromJSON.bind(this);
-        this.overrideExistingList = this.overrideExistingList.bind(this);
     }
 
     componentDidMount() {
         this.createItemsInputs();
     }
 
-    createLista() {
+    createList(list) {
+        const { listsManager } = this.props;
+
+        if(listsManager.createList(list) === -1) {
+            let override = window.confirm('There is already a list with the same name.\n' +
+                'Do you want to override it\'s type and items?');
+            if(override) {
+                listsManager.createList(list, override);
+            }
+        }
+    }
+
+    createListFromForm() {
         let name = document.querySelector('#nombre').value.trim();
         if(name === undefined || name === '') {
             alert('Name can\'t be empty');
@@ -68,56 +84,49 @@ export default class NewLista extends Component {
             return;
         }
 
-        let override = this.overrideExistingList(name);
-        if(override !== undefined) {
-            if(!override) {
-                return;
-            }
-        } else {
-            override = false;
-        }
-
         let newList = {
             "name": name,
             "type": type,
             "items": items
         }
 
-        this.props.createList(newList, override);
+        this.createList(newList);
     }
 
-    overrideExistingList(listName) {
-        let override;
-        let cookies = document.cookie;
-        for(let cookie of cookies.split(';')) {
-            let name = cookie.split('=')[0];
-            if(name.trim() === listName) {
-                override = window.confirm('There is already a list with the same name.\n' +
-                    'Do you want to override it\'s type and items?');
-            }
+    createListFromJSON() {
+        let textarea = document.querySelector('textarea#import-json');
+        let listAsJSON = textarea.value;
+        let newList;
+
+        try {
+            newList = JSON.parse(listAsJSON);
+        } catch(error) {
+            alert('An unexpected error ocurred\nError detail:\n"' + String(error) + '"');
+            return;
         }
 
-        return override;
+        this.createList(newList);
     }
 
     createItemsInputs() {
+        const { themesManager } = this.props;
+        const { itemInputsAddRate } = this.state;
         let itemInputs = [];
-        let itemInputsAddRate = this.state.itemInputsAddRate;
 
         for(let i = 1; i < itemInputsAddRate + 1; i++) {
-            itemInputs.push(<NewItem key={i} />);
+            itemInputs.push(<NewItem key={i} themesManager={themesManager} />);
         }
 
         this.setState({itemInputs: itemInputs});
     }
 
-    addItemInput() {
-        let itemInputs = this.state.itemInputs;
-        let itemInputsAddRate = this.state.itemInputsAddRate;
+    addItemInputs() {
+        const { themesManager } = this.props;
+        let { itemInputs, itemInputsAddRate } = this.state;
         let totalInputs = itemInputs.length;
 
         for(let i = 1; i < itemInputsAddRate + 1; i++) {
-            itemInputs.push(<NewItem key={totalInputs + i} />);
+            itemInputs.push(<NewItem key={totalInputs + i} themesManager={themesManager} />);
         }
 
         this.setState({itemInputs: itemInputs});
@@ -137,29 +146,6 @@ export default class NewLista extends Component {
         }
     }
 
-    importFromJSON() {
-        let textarea = document.querySelector('textarea#import-json');
-        let listAsJSON = textarea.value;
-        let newList;
-        try {
-            newList = JSON.parse(listAsJSON);
-        } catch(error) {
-            alert('An unexpected error ocurred\nError detail:\n"' + String(error) + '"');
-            return;
-        }
-        
-        let override = this.overrideExistingList(newList.name);
-        if(override !== undefined) {
-            if(!override) {
-                return;
-            }
-        } else {
-            override = false;
-        }
-
-        this.props.createList(newList, override);
-    }
-
     render() {
         const { themesManager, cancelNewList } = this.props; 
         const currentTheme = themesManager.getCurrentTheme();
@@ -170,6 +156,10 @@ export default class NewLista extends Component {
             backgroundColor: currentTheme.mainColor,
             borderColor: currentTheme.borderColor,
             color: currentTheme.textColor
+        }
+
+        const horizontalSeparatorStyle = {
+            backgroundColor: currentTheme.borderColor
         }
 
         return(
@@ -183,7 +173,7 @@ export default class NewLista extends Component {
                             <label htmlFor="nombre">Name</label>
                         </div>
                         <div className="input">
-                            <input type="text" id="nombre" name="nombre" />
+                            <input type="text" id="nombre" name="nombre" style={style} />
                         </div>
                     </div>
                     <div className="label-input">
@@ -191,7 +181,7 @@ export default class NewLista extends Component {
                             <label htmlFor="type">Type</label>
                         </div>
                         <div className="input">
-                            <select name="type" id="type">
+                            <select name="type" id="type" style={style} >
                                 <option value="">--- Select Type ---</option>
                                 <option value="Daily">Daily (Ausent, Here, Spoke)</option>
                                 <option value="Dual-State">Dual state list (Pending, Done)</option>
@@ -211,24 +201,24 @@ export default class NewLista extends Component {
                     <div className="label-input">
                         <div className="label"></div>
                         <div className="input">
-                            <button style={style} className="button-add-inputs" onClick={this.addItemInput} onMouseEnter={() => this.onMouseAction('button-add-inputs', 'enter')} onMouseLeave={() => this.onMouseAction('button-add-inputs', 'leave')} >(+) Item</button>
+                            <button style={style} className="button-add-inputs" onClick={this.addItemInputs} onMouseEnter={() => this.onMouseAction('button-add-inputs', 'enter')} onMouseLeave={() => this.onMouseAction('button-add-inputs', 'leave')} >(+) Item</button>
                         </div>
                     </div>
                     <div className="buttons">
                         <button type="button" className="button-cancel" style={style} onClick={cancelNewList} onMouseEnter={() => this.onMouseAction('button-cancel', 'enter')} onMouseLeave={() => this.onMouseAction('button-cancel', 'leave')} >Cancel</button>
-                        <button type="button" className="button-add" style={style} onClick={this.createLista} onMouseEnter={() => this.onMouseAction('button-add', 'enter')} onMouseLeave={() => this.onMouseAction('button-add', 'leave')} >Add new list</button>
+                        <button type="button" className="button-add" style={style} onClick={this.createListFromForm} onMouseEnter={() => this.onMouseAction('button-add', 'enter')} onMouseLeave={() => this.onMouseAction('button-add', 'leave')} >Add new list</button>
                     </div>
-                    <div className="horizontalSeparator" style={style} />
+                    <div className="horizontalSeparator" style={horizontalSeparatorStyle} />
                     <div className="label-input">
                         <div className="label">
                             <label htmlFor="import-json">JSON</label>
                         </div>
                         <div className="input">
-                            <textarea resizable="true" id="import-json" rows="5" cols="40" />
+                            <textarea resizable="true" id="import-json" rows="5" cols="40" style={style} />
                         </div>
                     </div>
                     <div className="buttons">
-                        <button type="button" className="button-import" style={style} onClick={this.importFromJSON} onMouseEnter={() => this.onMouseAction('button-import', 'enter')} onMouseLeave={() => this.onMouseAction('button-import', 'leave')} >Import from JSON</button>
+                        <button type="button" className="button-import" style={style} onClick={this.createListFromJSON} onMouseEnter={() => this.onMouseAction('button-import', 'enter')} onMouseLeave={() => this.onMouseAction('button-import', 'leave')} >Import from JSON</button>
                     </div>
                 </div>
             </div>

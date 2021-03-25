@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+
+/* Components */
 import Item from './../Item/Item';
+
+/* Stylesheets */
 import './Items.css'
 
 export default class Items extends Component {
@@ -13,13 +17,25 @@ export default class Items extends Component {
     }
 
     getItems() {
-        const { themesManager, list, updateItemValue } = this.props;
+        const { listsManager, themesManager } = this.props;
+        const currentList = listsManager.getCurrentList();
 
-        if(list !== undefined && list.items !== undefined) {
+        if(currentList !== undefined && currentList.items !== undefined) {
             let items = [];
 
-            for(let item of list.items) {
-                items.push(<Item key={item.key} name={item.name} value={item.value} type={list.type} themesManager={themesManager} updateItemValue={updateItemValue} />);
+            for(let i = 0; i < currentList.items.length; i++) {
+                let item = currentList.items[i];
+
+                items.push(
+                    <Item 
+                        key={currentList.name + i} 
+                        name={item.name} 
+                        value={item.value} 
+                        type={currentList.type} 
+                        listsManager={listsManager} 
+                        themesManager={themesManager} 
+                    />
+                );
             }
     
             return items;
@@ -27,19 +43,22 @@ export default class Items extends Component {
     }
 
     exportAsJson() {
-        let { list } = this.props;
-        console.log(list);
+        let { listsManager } = this.props;
+        const list = listsManager.getCurrentList();
+
         let items = [];
-        for(let listItem of list.items) {
-            let { name, value } = listItem;
-            let item = {
+        for(let item of list.items) {
+            let { name, value } = item;
+            item = {
                 "name": name,
                 "value": value
             };
             items.push(item);
         }
         list.items = items;
+
         let listAsJSON = JSON.stringify(list);
+
         let textArea = document.createElement('textarea');
         textArea.value = listAsJSON;
         document.body.append(textArea);
@@ -68,15 +87,15 @@ export default class Items extends Component {
     }
 
     render() {
-        const { themesManager, list } = this.props;
+        const { listsManager, themesManager } = this.props;
         const currentTheme = themesManager.getCurrentTheme();
+        const list = listsManager.getCurrentList();
 
         const style = {
             backgroundColor: currentTheme.mainColor,
             borderColor: currentTheme.borderColor,
             color: currentTheme.textColor
         }
-
 
         return(
             <div className="items" style={style}>

@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+
+/* Components */
 import Lista from './../Lista/Lista';
+
+/* Stylesheets */
 import './Listas.css';
 
 export default class Listas extends Component {
@@ -20,12 +24,11 @@ export default class Listas extends Component {
                 let list = lists[i];
 
                 listsAux.push(
-                    <Lista 
-                        key={list.name} 
-                        name={list.name} 
+                    <Lista  
+                        key={i} 
                         index={i}
-                        onClickList={this.props.onClickList} 
-                        deleteList={this.props.deleteList} 
+                        name={list.name} 
+                        listsManager={listsManager}
                         themesManager={themesManager}
                     />
                 );
@@ -59,7 +62,7 @@ export default class Listas extends Component {
     }
 
     render() {
-        const { themesManager } = this.props;
+        const { themesManager, newList } = this.props;
         const currentTheme = themesManager.getCurrentTheme();
 
         const style = {
@@ -78,7 +81,7 @@ export default class Listas extends Component {
                 </div>
                 <div className="nueva-lista" 
                     style={style} 
-                    onClick={this.props.newList}
+                    onClick={newList}
                     onMouseEnter={() => this.onMouseAction('nueva-lista', 'enter')}
                     onMouseLeave={() => this.onMouseAction('nueva-lista', 'leave')}
                 >

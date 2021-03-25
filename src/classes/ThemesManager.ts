@@ -4,6 +4,7 @@ export default class ThemesManager {
 
     themes: Object[] = [];
     currentThemeIndex: number = 0;
+    newItemStateUpdater: Function[] = [];
 
     constructor() {
         this.currentThemeIndex = CookiesManager.getCurrentThemeIndex();
@@ -38,6 +39,10 @@ export default class ThemesManager {
         return this.themes[this.currentThemeIndex];
     }
 
+    getCustomTheme() : Object {
+        return this.themes[2];
+    }
+
     getCurrentThemeIndex() : number {
         return this.currentThemeIndex;
     }
@@ -50,6 +55,17 @@ export default class ThemesManager {
     setCurrentTheme(themeIndex: number) : void {
         this.currentThemeIndex = themeIndex;
         CookiesManager.saveCurrentThemeIndex(themeIndex);
+        this.updateNewItemsState();
+    }
+
+    updateNewItemsState() : void {
+        for(let i = 0; i < this.newItemStateUpdater.length; i++) {
+            this.newItemStateUpdater[i]();
+        }
+    }
+
+    addNewItemStateUpdater(stateUpdater : Function) : void {
+        this.newItemStateUpdater.push(stateUpdater);
     }
 
 }   

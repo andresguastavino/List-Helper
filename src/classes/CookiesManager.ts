@@ -1,11 +1,6 @@
 export default class CookiesManager {
 
-    lists: Object[] = [];
-    customTheme: Object = {};
-    currentThemeIndex: number = -1;
-
-
-    static getLists() : Object[] {
+    static getLists(init : boolean) : any[] {
         let lists = [];
         let cookies = document.cookie;
         if(cookies !== '') {
@@ -25,7 +20,7 @@ export default class CookiesManager {
                             "value": ''
                         }
 
-                        if(type.toLowerCase() === 'daily') {
+                        if(type.toLowerCase() === 'daily' && init) {
                             itemAux.value = 'Ausent';
                         } else {
                             itemAux.value = item.split(':')[1].trim();
@@ -34,11 +29,17 @@ export default class CookiesManager {
                         items.push(itemAux);
                     }
 
-                    lists.push({
+                    let list ={
                         "name": name,
                         "type": type, 
                         "items": items
-                    });
+                    };
+
+                    lists.push(list);
+
+                    if(type.toLowerCase() === 'daily' && init) {
+                        CookiesManager.saveList(list);
+                    }
                 }
             }
         }
@@ -62,7 +63,7 @@ export default class CookiesManager {
         return currentThemeIndex;
     }
 
-    static getCustomTheme() : Object {
+    static getCustomTheme() : any {
         let customTheme = {};
         let cookies = document.cookie;
         if(cookies !== '') {
@@ -96,8 +97,27 @@ export default class CookiesManager {
         CookiesManager.saveCookie(cookie);
     }
 
+    static saveList(list : any) : void {
+        let cookie = list.name + '=' + list.type + ',';
+
+        for(let i = 0; i < list.items.length; i++) {
+            let item = list.items[i];
+            cookie += item.name + ':' + item.value;
+
+            if(i !== list.items.length - 1) {
+                cookie += ',';
+            }
+        }
+        CookiesManager.saveCookie(cookie);
+    }
+
     static saveCookie(cookie: string) : void {
         cookie += '; Path=/; Expires=Thu, 01 Jan ' + (new Date().getFullYear() + 1)  + ' 00:00:00 GMT;';
+        document.cookie = cookie;
+    }
+
+    static deleteList(list: any) : void {
+        let cookie = list.name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;';
         document.cookie = cookie;
     }
  

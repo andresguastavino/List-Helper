@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+
+/* Stylesheets */
 import './Lista.css';
 
 export default class Lista extends Component {
@@ -6,18 +8,20 @@ export default class Lista extends Component {
     constructor(props) {
         super(props);
 
+        this.selectList = this.selectList.bind(this);
         this.deleteList = this.deleteList.bind(this);
-        this.onClick = this.onClick.bind(this);
         this.onMouseAction = this.onMouseAction.bind(this);
         this.buildClassName = this.buildClassName.bind(this);
     }
 
-    onClick() {
-        this.props.onClickList(this.props.name);
+    selectList() {
+        const { listsManager, index} = this.props;
+        listsManager.setCurrentListIndex(index);
     }
 
     deleteList() {
-        this.props.deleteList(this.props.name);
+        const { listsManager, index } = this.props;
+        listsManager.deleteList(index);
     }
 
     onMouseAction(type, index) {
@@ -37,16 +41,19 @@ export default class Lista extends Component {
     }
 
     buildClassName(isCalledFromRender) {
-        let listName = this.props.name;
+        const { name } = this.props;
         let className;
+
         if(isCalledFromRender) {
-            className = listName.replace(' ', '');
+            className = name.replace(' ', '');
         } else {
-            className = '.' + listName.replace(' ', '');
+            className = '.' + name.replace(' ', '');
         }
+
         while(className.indexOf(' ') !== -1) {
             className = className.replace(' ', '');
         }
+
         return className.toLowerCase();
     }
 
@@ -66,7 +73,7 @@ export default class Lista extends Component {
             <div className="lista" style={style}>
                 <div className={"button " + className} 
                     style={style} 
-                    onClick={this.onClick}
+                    onClick={this.selectList}
                     onMouseEnter={() => this.onMouseAction('enter', 0)}
                     onMouseLeave={() => this.onMouseAction('leave', 0)}
                 >

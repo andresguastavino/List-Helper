@@ -23,76 +23,24 @@ export default class Header extends Component {
     }
 
     componentDidMount() {
-        let { themesManager } = this.props;
-        let currentTheme = themesManager.getCurrentTheme();
-        let currentThemeIndex = themesManager.getCurrentThemeIndex();
+        const { themesManager } = this.props;
+        const customTheme = themesManager.getCustomTheme();
+        const currentThemeIndex = themesManager.getCurrentThemeIndex();
 
-        this.setState({
-            theme: currentThemeIndex,
-            mainColor: currentTheme.mainColor,
-            secondaryColor: currentTheme.secondaryColor,
-            borderColor: currentTheme.borderColor,
-            textColor: currentTheme.textColor,
-            showCustomThemeModal: currentThemeIndex == 2,
-        })
-        /*
-        let theme, mainColor, secondaryColor, borderColor, textColor;
-        let customMainColor, customSecondaryColor, customBorderColor, customTextColor;
-        let cookies = document.cookie;
-        if(cookies !== '') {
-            for(let cookie of cookies.split(';')) {
-                let nombreLista = cookie.split('=')[0].trim();
-                let items = cookie.split('=')[1].split(',');
-                if(nombreLista === 'themeProps') {
-                    theme = items[0];
-                    mainColor = items[1];
-                    secondaryColor = items[2];
-                    borderColor = items[3];
-                    textColor = items[4];   
-                } else if(nombreLista === 'customThemeProps') {
-                    customMainColor = items[0];
-                    customSecondaryColor = items[1];
-                    customBorderColor = items[2];
-                    customTextColor = items[3];
-                }
-            }
-        } 
-
-        let showCustomThemeModal = false;
-        if(theme === undefined) {
-            theme = 0;
-        } else if(parseInt(theme) === 2) {
-            showCustomThemeModal = true;
-        }
-
-        this.setState({
-            showCustomThemeModal
-        });
-
-        this.setState({
-            theme: theme,
-            showCustomThemeModal: showCustomThemeModal,
-            mainColor: customMainColor !== undefined ? customMainColor : '#000',
-            secondaryColor: customSecondaryColor !== undefined ? customSecondaryColor: '#000',
-            borderColor: customBorderColor !== undefined ? customBorderColor : '#fff',
-            textColor: customTextColor !== undefined ? customTextColor : '#fff'
-        });
-
-        let themeProps = {
-            theme: theme,
-            mainColor: mainColor,
-            secondaryColor: secondaryColor,
-            borderColor: borderColor,
-            textColor: textColor
-        }
-
-        this.props.setTheme(themeProps);
-        */
         for(let input of document.querySelectorAll('input[type="radio"]')) {
             if(parseInt(input.value) === currentThemeIndex) {
                 input.checked = true;
             }
         }
+
+        this.setState({
+            theme: currentThemeIndex,
+            mainColor: customTheme.mainColor,
+            secondaryColor: customTheme.secondaryColor,
+            borderColor: customTheme.borderColor,
+            textColor: customTheme.textColor,
+            showCustomThemeModal: currentThemeIndex === 2,
+        });
     }
    
     setTheme(themeIndex) {
@@ -113,47 +61,13 @@ export default class Header extends Component {
 
         this.setState({showCustomThemeModal});
         this.props.setTheme(themeIndex, customTheme);
-        /*
-        if(theme === 0) {
-            themeProps = {
-                theme: theme,
-                mainColor: '#fff',
-                secondaryColor: '#fff',
-                borderColor: '#000',
-                textColor: '#000',
-            }
-            showCustomThemeModal = false;
-        } else if(theme === 1) {
-            themeProps = {
-                theme: theme,
-                mainColor: '#000',
-                secondaryColor: '#201e25',
-                borderColor: '#383434',
-                textColor: '#fff',
-            }
-            showCustomThemeModal = false;
-        } else {
-            let colorInputs = document.querySelectorAll('input[type="color"]');
-            themeProps = {
-                theme: theme,
-                mainColor: colorInputs[0].value,
-                secondaryColor: colorInputs[1].value,
-                borderColor: colorInputs[2].value,
-                textColor: colorInputs[3].value,
-            }
-        }
-
-        this.props.setTheme(themeProps);
-        this.setState({
-            showCustomThemeModal
-        });
-        */
     }
 
     changeColor(input) {
         let value = document.querySelector('#' + input).value;
         let span = document.querySelector('#sp-' + input);
         span.style.backgroundColor = value;
+        
         switch(input) {
             case 'main-color':
                 this.setState({mainColor: value});
@@ -171,8 +85,9 @@ export default class Header extends Component {
     }
 
     onMouseAction(className, type) {
-        let { themesManager } = this.props;
-        let currentTheme = themesManager.getCurrentTheme();
+        const { themesManager } = this.props;
+        const currentTheme = themesManager.getCurrentTheme();
+        
         let div = document.querySelector('.' + className);
 
         if(type === 'enter') {
