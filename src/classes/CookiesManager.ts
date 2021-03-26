@@ -7,7 +7,10 @@ export default class CookiesManager {
             for(let cookie of cookies.split(';')) {
                 let name = cookie.split('=')[0].trim();
 
-                if(name !== 'currentThemeIndex' && name !== 'customTheme') {
+                if(name !== 'currentThemeIndex' 
+                    && name !== 'customTheme'
+                    && name !== 'cookiesAccepted'
+                ) {
                     let listInfo = cookie.split('=')[1].split(',');
                     let type = listInfo[0];
                     listInfo.shift();
@@ -83,6 +86,27 @@ export default class CookiesManager {
         }
 
         return customTheme;
+    }
+
+    static cookiesAccepted() : boolean {
+        let cookies = document.cookie;
+        if(cookies !== '') {
+            for(let cookie of cookies.split(';')) {
+                let name = cookie.split('=')[0].trim();
+
+                if(name === 'cookiesAccepted') {
+                    console.log(cookie.split('=')[1]);
+                    return cookie.split('=')[1] === 'true';
+                }
+            }
+        }
+
+        return false;
+    }
+
+    static acceptCookies() : void {
+        let cookie = 'cookiesAccepted=true';
+        CookiesManager.saveCookie(cookie);
     }
 
     static saveCustomTheme(customTheme: any) : void {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 /* Classes */
 import ThemesManager from './classes/ThemesManager';
+import CookiesManager from './classes/CookiesManager';
 import ModalManager from './classes/ModalManager';
 
 /* Components */
@@ -30,17 +31,21 @@ export default class App extends Component {
     }
 
     componentDidMount() {
-        ModalManager.getInstance().setModalInfo(
-            'Hold it right there', 
-            'This site only uses cookies to store data. Do you accept cookies into your heart?',
-            true,
-            () => {
-                this.acceptCookies(true);
-            },
-            () => {
-                this.acceptCookies(false);
-            },
-        );
+        let cookiesAccepted = CookiesManager.cookiesAccepted();
+        if(!cookiesAccepted) {
+            ModalManager.getInstance().setModalInfo(
+                'Hold it right there', 
+                'This site only uses cookies to store data. Do you accept cookies into your heart?',
+                true,
+                () => {
+                    CookiesManager.acceptCookies();
+                    this.acceptCookies(true);
+                },
+                () => {
+                    this.acceptCookies(false);
+                },
+            );
+        }
     }
 
     acceptCookies(cookiesAccepted) {
