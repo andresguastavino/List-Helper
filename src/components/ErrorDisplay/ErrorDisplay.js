@@ -28,9 +28,9 @@ export default class ErrorDisplay extends Component {
 
         return (
             <div className="cookies-not-accepted" style={style} >
-                <p>Oops!</p>
-                <p>¯\_(ツ)_/¯</p>
-                <p style={pFontSize} >
+                <p style={pFontSize}>Oops!</p>
+                <p style={pFontSize}>¯\_(ツ)_/¯</p>
+                <p style={pFontSize}>
                     { cookiesNotAccepted ? 
                     'You did not accept the use of cookies' :
                     'Sorry, we don\'t have support for this screen resolution yet. Try on a device with a width resolution equal or greater than 920px' }
