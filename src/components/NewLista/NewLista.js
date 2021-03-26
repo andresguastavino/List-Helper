@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+/* Classes */
+import ModalManager from './../../classes/ModalManager';
+
 /* Components */
 import NewItem from './../NewItem/NewItem';
 
@@ -32,24 +35,27 @@ export default class NewLista extends Component {
         const { listsManager } = this.props;
 
         if(listsManager.createList(list) === -1) {
-            let override = window.confirm('There is already a list with the same name.\n' +
-                'Do you want to override it\'s type and items?');
-            if(override) {
-                listsManager.createList(list, override);
-            }
+            ModalManager.getInstance().setModalInfo(
+                'List already exists', 
+                'There is already a list with the same name. Do you want to override it\'s type and items?', 
+                true,
+                function() {
+                    listsManager.createList(list, true);
+                }
+            );
         }
     }
 
     createListFromForm() {
         let name = document.querySelector('#nombre').value.trim();
         if(name === undefined || name === '') {
-            alert('Name can\'t be empty');
+            ModalManager.getInstance().setModalInfo('Missing input', 'Name can\'t be empty', false);
             return;
         }
 
         let firstChar = name.charAt(0);
         if(firstChar >= 0 && firstChar <= 9) {
-            alert('The first character of the name can\'t be a number');
+            ModalManager.getInstance().setModalInfo('Wrong input', 'The first character of the name can\'t be a number', false);
             return;
         }
 
@@ -64,7 +70,7 @@ export default class NewLista extends Component {
                 initialState = 'Pending';
             }
         } else {
-            alert('You must select a list type');
+            ModalManager.getInstance().setModalInfo('Missing input', 'You must select a list type', false);
             return; 
         }
 
@@ -80,7 +86,7 @@ export default class NewLista extends Component {
         }
 
         if(items.length === 0) {
-            alert('Can\'t create a list with no items');
+            ModalManager.getInstance().setModalInfo('Missing input', 'Can\'t create a list with no items', false);
             return;
         }
 
@@ -101,7 +107,7 @@ export default class NewLista extends Component {
         try {
             newList = JSON.parse(listAsJSON);
         } catch(error) {
-            alert('An unexpected error ocurred\nError detail:\n"' + String(error) + '"');
+            ModalManager.getInstance().setModalInfo('An unexpected error ocurred', String(error), false);
             return;
         }
 

@@ -7,6 +7,7 @@ import ThemesManager from './classes/ThemesManager';
 import Header from './components/Header/Header';
 import Main from './components/Main/Main';
 import Footer from './components/Footer/Footer';
+import Modal from './components/Modal/Modal';
 
 /* Stylesheets */
 import './App.css';
@@ -60,6 +61,7 @@ export default class App extends Component {
                 <Header setTheme={this.setTheme} themesManager={themesManager} />
                 <Main themesManager={themesManager} />
                 <Footer themesManager={themesManager} />
+                <Modal themesManager={themesManager} />
             </div>
         );
     }

@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+/* Classes */
+import ModalManager from './../../classes/ModalManager';
+
 /* Components */
 import Item from './../Item/Item';
 
@@ -65,7 +68,7 @@ export default class Items extends Component {
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        alert('List coppied to clipboard as JSON');
+        ModalManager.getInstance().setModalInfo('Success', 'List coppied to clipboard as JSON', false);
     }
 
     onMouseAction(className, type) {
