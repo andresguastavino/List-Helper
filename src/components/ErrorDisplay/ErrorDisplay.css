@@ -1,0 +1,15 @@
+.cookies-not-accepted {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,1);
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.cookies-not-accepted p {
+    width: 100%;
+    text-align: center;
+    font-size: 100px;
+}

@@ -20,7 +20,7 @@ export default class Modal extends Component {
         }
 
         this.renderModal = this.renderModal.bind(this);
-        this.hide = this.hide.bind(this);
+        this.cancel = this.cancel.bind(this);
         this.accept = this.accept.bind(this);
         this.onMouseAction = this.onMouseAction.bind(this);
     }
@@ -41,13 +41,15 @@ export default class Modal extends Component {
         });
     }   
 
-    hide() {
+    cancel() {
+        const { modalManager } = this.state;
+        modalManager.accept(false);
         this.setState({show : false});
     }
 
     accept() {
         const { modalManager } = this.state;
-        modalManager.override();
+        modalManager.accept(true);
         this.setState({show : false});
     }
 
@@ -88,7 +90,7 @@ export default class Modal extends Component {
                             <p>{message}</p>
                         </div>
                         <div className="modal-footer" style={style} >
-                            <div className="modal-close" style={style} onClick={this.hide} onMouseEnter={() => this.onMouseAction('modal-close', 'enter')} onMouseLeave={() => this.onMouseAction('modal-close', 'leave')}>
+                            <div className="modal-close" style={style} onClick={this.cancel} onMouseEnter={() => this.onMouseAction('modal-close', 'enter')} onMouseLeave={() => this.onMouseAction('modal-close', 'leave')}>
                                 { hasAccept ? 'Cancel' : 'Close' }
                             </div>
                             { hasAccept ? 

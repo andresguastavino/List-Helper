@@ -6,6 +6,7 @@ export default class ModalManager {
     private modalHasAccept : boolean = false;
     private renderModal : Function = () => {};
     private callbackAccept : Function = () => {};
+    private callbackReject : Function = () => {};
 
     private constructor() {}
 
@@ -13,11 +14,12 @@ export default class ModalManager {
         return this.instance;
     }
 
-    setModalInfo(title : string, message : string, modalHasAccept : boolean, callbackAccept ?: Function) : void {
+    setModalInfo(title : string, message : string, modalHasAccept : boolean, callbackAccept ?: Function, callbackReject ?: Function) : void {
         this.title = title;
         this.message = message;
         this.modalHasAccept = modalHasAccept;
         this.callbackAccept = callbackAccept !== undefined ? callbackAccept : () => {};
+        this.callbackReject = callbackReject !== undefined ? callbackReject : () => {};
         this.renderModal();
     }
 
@@ -25,8 +27,12 @@ export default class ModalManager {
         this.renderModal = renderModal;
     }
 
-    override() : void {
-        this.callbackAccept();
+    accept(accept : boolean) : void {
+        if(accept) {
+            this.callbackAccept();
+        } else {
+            this.callbackReject();
+        }
     }
 
     getTitle() : string {
