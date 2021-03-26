@@ -86,7 +86,7 @@ export default class Items extends Component {
     }
 
     onEditItems() {
-        alert('feature not ready yet!');
+        ModalManager.getInstance().setModalInfo('Oops! ¯\\_(ツ)_/¯', 'Feature not ready yet', false);
     }
 
     render() {
