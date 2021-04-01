@@ -72,20 +72,12 @@ export default class App extends Component {
         const style = {
             backgroundColor: currentTheme.secondaryColor
         }
-/*
-        if(window.screen.width < 720 || window.innerWidth < 720) {
-            console.log('window screen width: ' + window.screen.width);
-            console.log('window innerWidth: ' + window.innerWidth);
-            return (
-                <div className="app" style={style}>
-                    <h1>Sorry, we don't have support for this screen resolution yet. Try on a device with a width resolution greater than 720px.</h1>
-                </div>
-            );
-        }
-*/
+
+        document.querySelector('body').style.backgroundColor = currentTheme.secondaryColor;
+
         let noSupportForCurrentResolution = window.screen.width < 920;
 
-        if(!cookiesAccepted || noSupportForCurrentResolution) {
+        if(!cookiesAccepted /*|| noSupportForCurrentResolution*/) {
             return (
                 <div className="app" style={style}>
                     <ErrorDisplay themesManager={themesManager} cookiesNotAccepted={!cookiesAccepted} />
@@ -96,8 +88,9 @@ export default class App extends Component {
                 <div className="app" style={style}>
                     <Header setTheme={this.setTheme} themesManager={themesManager} />
                     <Main themesManager={themesManager} />
+                    {/*
                     <Footer themesManager={themesManager} />
-                    <Modal themesManager={themesManager} />
+                    <Modal themesManager={themesManager} />*/}
                 </div>
             );
         }

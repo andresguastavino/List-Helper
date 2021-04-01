@@ -1,8 +1,121 @@
-@media only screen and (min-width: 720px) {
+.header {
+    width: 100%;
+    display:flex;
+}
+
+.custom-theme-modal {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+.theme-group-holder {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.color-input-group {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.color-input-group input {
+    display: none;
+}
+
+.color-input-group span {
+    width: 20px;
+    height: 20px;
+    display: block;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.apply-button {
+    padding: 3px 10px;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 1px;
+}
+
+@media (min-width: 100px) and (max-width: 920px) {
     .header {
+        position: sticky;
+        top: 0;
+        flex-wrap: wrap;
+        border-width: 0px;
+        border-bottom: 1px;
+        border-style: solid;
+        margin-bottom: 2%;
+    }
+
+    .text-holder {
+        width: 90%;
+        font-size: 1.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1% 0;
+    }
+    
+    .themes-manager-container {
+        width: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .themes-manager-button {
+        border-width: 1px;
+        border-style: solid;
+        width: 80%;
+        height: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 3rem;
+    }
+
+    .theme-group-holder {
         width: 100%;
+        border-width: 0px;
+        border-top-width: 1px;
+        border-style: solid;
+    }
+
+    .input-group-title {
+        margin: 2%;
+    }
+
+    .input-group {
+        margin: 2%;
+    }
+
+    .custom-theme-modal {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        border-width: 0px;
+        border-top-width: 1px;
+        border-style: solid;
+    }
+
+    .color-input-group {
+        margin: 2%;
+    }
+
+    .color-input-group span {
+        margin-right: 3px;
+    }
+}
+
+@media (min-width: 920px) {
+    .header {
         height: 10vh;
-        display:flex;
         align-items: center;
         padding-left: 20px;
         border-width: 0px;
@@ -23,9 +136,6 @@
     .theme-group-holder {
         margin-left: 2%;
         margin-right: 2%;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
     }
 
     .input-group {
@@ -45,39 +155,13 @@
         width: 50%;
         height: 100%;
         margin-left: 2%;
-        display: flex;
-        flex-wrap: wrap;
-        align-content: center;
     }
 
     .color-input-group {
         margin: 1px 2%;
-        display: flex;
-        flex-wrap: wrap;
     }
 
     .color-input-group label {
         margin-left: 5px;
-    }
-
-    .color-input-group input {
-        display: none;
-    }
-
-    .color-input-group span {
-        width: 20px;
-        height: 20px;
-        display: block;
-        border-width: 1px;
-        border-style: solid;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-
-    .apply-button {
-        padding: 3px 10px;
-        cursor: pointer;
-        border-style: solid;
-        border-width: 1px;
     }
 }
